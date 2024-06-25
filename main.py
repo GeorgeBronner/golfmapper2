@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
 from database import engine
-from routers import garmin_courses, garmin_courses_no_auth, auth, admin, users, user_courses, user_courses_no_auth
+from routers import garmin_courses, garmin_courses_no_auth, auth, admin, users, user_courses, user_courses_no_auth, map
 from models import Base
 
 
@@ -29,3 +29,4 @@ app.include_router(admin.router)
 app.include_router(users.router)
 app.include_router(user_courses.router)
 app.include_router(user_courses_no_auth.router)
+app.include_router(map.router)

@@ -37,6 +37,10 @@ class Users(Base):
 
 
 class UserCourses(Base):
+
+    def __repr__(self):
+        return f"Course ({self.course_id}, {self.user_id}, {self.year})"
+
     __tablename__ = "new_user_courses"
 
     id = Column(Integer, primary_key=True, index=True)

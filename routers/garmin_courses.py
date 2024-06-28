@@ -50,7 +50,7 @@ async def read_todo(user: user_dependency, db: db_dependency, course_id: int = P
     course_model = db.query(Courses).filter(Courses.id == course_id).first()
     if course_model is not None:
         return course_model
-    raise HTTPException(status_code=404, detail="Todo not found")
+    raise HTTPException(status_code=404, detail="Course not found")
 
 @router.get("/closest_courses/")
 async def get_closest_courses(lat: float = Query(...),

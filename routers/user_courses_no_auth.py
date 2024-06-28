@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Path, Query
 from starlette import status
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from database import SessionLocal
 from sqlalchemy.orm import Session, joinedload
 from typing import Annotated
@@ -38,6 +38,13 @@ user_dependency = Annotated[dict, Depends(get_test_user)]
 
 class UserCourseRequest(BaseModel):
     garmin_id: int = Field(...)
+    year: int = Field(...)
+
+    @field_validator('year')
+    def check_year(cls, v):
+        if v < 1900 or v > 2070:
+            return None
+        return v
 
 
 @router.get("/readall_ids", status_code=status.HTTP_200_OK)
@@ -78,7 +85,7 @@ async def readall(user: user_dependency, db: db_dependency):
 async def add_user_course(user: user_dependency, db: db_dependency, user_course_request: UserCourseRequest):
     if user is None:
         raise HTTPException(status_code=401, detail="Unauthorized")
-    user_course_model = UserCourses(course_id=user_course_request.garmin_id, user_id=user.get("id"))
+    user_course_model = UserCourses(course_id=user_course_request.garmin_id, year=user_course_request.year, user_id=user.get("id"))
     db.add(user_course_model)
     db.commit()
 #

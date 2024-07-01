@@ -9,12 +9,6 @@ from .auth import get_current_user
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 
-
-@router.get("/")
-async def root():
-    return {"message": "Hello World"}
-
-
 def get_db():
     db = SessionLocal()
     try:
@@ -25,6 +19,12 @@ def get_db():
 
 db_dependency = Annotated[Session, Depends(get_db)]
 user_dependency = Annotated[dict, Depends(get_current_user)]
+
+@router.get("/")
+async def root(user: user_dependency):
+    if user is None or user.get("user_role") != "admin":
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    return {"message": "Hello Admin"}
 
 
 @router.get("/courses", status_code=status.HTTP_200_OK)

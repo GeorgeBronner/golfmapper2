@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, Path, Query
 from starlette import status
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
 from database import SessionLocal
 from sqlalchemy.orm import Session, joinedload
 from typing import Annotated
@@ -36,6 +36,13 @@ user_dependency = Annotated[dict, Depends(get_current_user)]
 
 class UserCourseRequest(BaseModel):
     garmin_id: int = Field(...)
+    year: int = Field(...)
+
+    @field_validator('year')
+    def check_year(cls, v):
+        if v < 1900 or v > 2070:
+            return None
+        return v
 
 
 @router.get("/readall_ids", status_code=status.HTTP_200_OK)
@@ -102,10 +109,23 @@ async def readall(user: user_dependency, db: db_dependency):
 
     return courses
 
+
 @router.post("/add_course", status_code=status.HTTP_201_CREATED)
-async def create_todo(user: user_dependency, db: db_dependency, user_course_request: UserCourseRequest):
+async def add_user_course(user: user_dependency, db: db_dependency, user_course_request: UserCourseRequest):
     if user is None:
         raise HTTPException(status_code=401, detail="Unauthorized")
-    todo_model = UserCourses(course_id=user_course_request.garmin_id, user_id=user.get("id"))
-    db.add(todo_model)
+    user_course_model = UserCourses(course_id=user_course_request.garmin_id, year=user_course_request.year, user_id=user.get("id"))
+    db.add(user_course_model)
+    db.commit()
+
+
+@router.delete("/delete/{course_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_user_course(user: user_dependency, db: db_dependency, course_id: int = Path(ge=1)):
+    if user is None:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    user_course_model = db.query(UserCourses).filter(UserCourses.course_id == course_id).filter(UserCourses.user_id == user.get("id")).first()
+    if user_course_model is None:
+        raise HTTPException(status_code=404, detail="Course_id not found")
+    db.delete(user_course_model)
     db.commit()

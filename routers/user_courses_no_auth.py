@@ -120,7 +120,7 @@ async def add_user_course(user: user_dependency, db: db_dependency, user_course_
     user_course_model = UserCourses(course_id=user_course_request.garmin_id, year=user_course_request.year, user_id=user.get("id"))
     db.add(user_course_model)
     db.commit()
-#
+
 
 @router.delete("/delete/{course_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_user_course(user: user_dependency, db: db_dependency, course_id: int = Path(ge=1)):

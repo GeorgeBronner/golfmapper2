@@ -162,3 +162,4 @@ cython_debug/
 keys.py
 garmin.db
 testdb.db
+static/user_maps/

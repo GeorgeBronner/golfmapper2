@@ -22,11 +22,11 @@ class Courses(Base):
 class Users(Base):
 
     def __repr__(self):
-        return f"User({self.username}, {self.email}, {self.first_name}, {self.last_name}, {self.role}, {self.phone_number})"
+        return f"User({self.username}, {self.email}, {self.first_name}, {self.last_name}, {self.role})"
 
     __tablename__ = "users"
 
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True, autoincrement=True)
     email = Column(String, unique=True)
     username = Column(String, unique=True)
     first_name = Column(String)

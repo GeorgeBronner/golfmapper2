@@ -79,13 +79,23 @@ class Token(BaseModel):
 
 @router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_user(db: db_dependency, create_user_request: CreateUserRequest):
+    # Check if a user with the same username or email already exists
+    existing_user = db.query(Users).filter(
+        (Users.username == create_user_request.username) |
+        (Users.email == create_user_request.email)
+    ).first()
+
+    if existing_user is not None:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT,
+                            detail="User with the same username or email already exists")
+
     create_user_model = Users(
         username=create_user_request.username,
         email=create_user_request.email,
         first_name=create_user_request.first_name,
         last_name=create_user_request.last_name,
         hashed_password=bcrypt_context.hash(create_user_request.password),
-        role=create_user_request.role,
+        role='user',
         is_active=True,
     )
     db.add(create_user_model)

@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy import Column, Integer, String, Float
+from sqlalchemy.orm import declarative_base
 engine = create_engine('sqlite:///garmin.db', echo = True)
-from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
 
 class courses(Base):
@@ -19,7 +19,7 @@ from sqlalchemy.orm import sessionmaker
 Session = sessionmaker(bind = engine)
 session = Session()
 result = int(input(f"Which course id to you want to edit? "))
-i = session.query(courses).get(result)
+i = session.get(courses, result)
     
 print(f'Course: {i.g_course}, city: {i.g_city}, country: {i.g_country}, id: {i.id}')
 result = input("Is this the course you want to edit? ")

@@ -4,7 +4,19 @@ from starlette.middleware.cors import CORSMiddleware
 from database import engine
 from routers import garmin_courses, garmin_courses_no_auth, auth, admin, users, user_courses, user_courses_no_auth, map
 from models import Base
+from keys import SENTRY_DSN
+import sentry_sdk
 
+sentry_sdk.init(
+    dsn=SENTRY_DSN,
+    # Set traces_sample_rate to 1.0 to capture 100%
+    # of transactions for performance monitoring.
+    traces_sample_rate=1.0,
+    # Set profiles_sample_rate to 1.0 to profile 100%
+    # of sampled transactions.
+    # We recommend adjusting this value in production.
+    profiles_sample_rate=1.0,
+)
 
 app = FastAPI()
 Base.metadata.create_all(bind=engine)

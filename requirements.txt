@@ -9,3 +9,4 @@ pytest
 bcrypt==3.2.2
 passlib
 folium
+sentry-sdk[fastapi]

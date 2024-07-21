@@ -43,3 +43,7 @@ async def delete_todo(user: user_dependency, db: db_dependency, course_id: int =
         raise HTTPException(status_code=404, detail="Todo not found")
     db.delete(todo_model)
     db.commit()
+
+@router.get("/sentry-debug")
+async def trigger_error():
+    division_by_zero = 1 / 0

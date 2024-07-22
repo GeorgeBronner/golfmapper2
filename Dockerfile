@@ -1,9 +1,5 @@
-FROM python:3.12-alpine
+FROM python:3.12-slim
 WORKDIR /usr/src/app
-
-# Install dependencies
-RUN apk update \
-    && apk add --no-cache postgresql-dev gcc musl-dev libffi-dev
 
 COPY . .
 RUN pip install --no-cache-dir -r requirements.txt

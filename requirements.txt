@@ -12,6 +12,5 @@ folium
 sentry-sdk[fastapi]
 python-dotenv
 #for postgres
-psycopg2
-asyncpg
+psycopg2-binary
 ###

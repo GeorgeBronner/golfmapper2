@@ -6,8 +6,8 @@ from typing import Annotated
 from models import Courses
 from .auth import get_current_user
 
-
 router = APIRouter(prefix="/admin", tags=["admin"])
+
 
 def get_db():
     db = SessionLocal()
@@ -19,6 +19,7 @@ def get_db():
 
 db_dependency = Annotated[Session, Depends(get_db)]
 user_dependency = Annotated[dict, Depends(get_current_user)]
+
 
 @router.get("/")
 async def root(user: user_dependency):
@@ -43,6 +44,7 @@ async def delete_todo(user: user_dependency, db: db_dependency, course_id: int =
         raise HTTPException(status_code=404, detail="Todo not found")
     db.delete(todo_model)
     db.commit()
+
 
 @router.get("/sentry-debug")
 async def trigger_error():

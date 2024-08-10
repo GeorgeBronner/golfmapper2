@@ -34,6 +34,7 @@ client = TestClient(app)
 # course_id = Column(Integer, ForeignKey("courses.id"))
 # user_id = Column(Integer, ForeignKey("users.id"))
 
+
 @pytest.fixture
 def test_user_courses():
     user_course = UserCourses(course_id=200, user_id=1, year=2021)

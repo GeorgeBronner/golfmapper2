@@ -52,11 +52,9 @@ if result == 'y':
         i.g_longitude = new_long
         session.commit()
 
-        confirm = input(
-            f'Also update sqlite Course: {j.g_course}, city: {j.g_city}, country: {j.g_country}, id: {j.id}, with lat: {new_lat}, long={new_long} ? ')
-        if confirm == 'y':
-            j.g_latitude = new_lat
-            j.g_longitude = new_long
-            session_sqlite.commit()
+        #update sqlite database
+        j.g_latitude = new_lat
+        j.g_longitude = new_long
+        session_sqlite.commit()
 else:
     pass

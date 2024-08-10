@@ -22,6 +22,7 @@ def test_readall_authenticated(test_user_courses):
         }
     ]
 
+
 def test_read_one_authenticated(test_user_courses):
     response = client.get("/user_courses/readall_ids")
     assert response.status_code == status.HTTP_200_OK

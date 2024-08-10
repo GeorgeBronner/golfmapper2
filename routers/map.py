@@ -1,18 +1,14 @@
-from fastapi import APIRouter, Depends, HTTPException, Path, Query
+from fastapi import APIRouter, Depends, HTTPException
 from starlette import status
-from pydantic import BaseModel, Field
 from database import SessionLocal
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.orm import Session
 from typing import Annotated
-from models import Courses, UserCourses
 from routers.auth import get_current_user
 from fastapi.responses import FileResponse
 import folium
-
 import geopy.geocoders
 import certifi
 import ssl
-from typing import Optional
 
 from routers.user_courses import readall
 
@@ -38,6 +34,7 @@ async def root(user: user_dependency):
     if user is None:
         raise HTTPException(status_code=401, detail="Unauthorized")
     return FileResponse(f"static/user_maps/user_map_{user['username']}_{user['id']}.html")
+
 
 @router.get("/usermap1")
 async def root():

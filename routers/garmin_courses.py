@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Path, Query
 from starlette import status
-from pydantic import BaseModel, Field
 from database import SessionLocal
 from sqlalchemy.orm import Session
 from typing import Annotated
@@ -44,6 +43,7 @@ async def readall(user: user_dependency, db: db_dependency):
     # return db.query(Courses).all()
     return db.query(Courses).filter(Courses.g_state == 'Texas').all()
 
+
 @router.get("/course/{course_id}", status_code=status.HTTP_200_OK)
 async def read_todo(user: user_dependency, db: db_dependency, course_id: int = Path(ge=1)):
     if user is None:
@@ -52,6 +52,7 @@ async def read_todo(user: user_dependency, db: db_dependency, course_id: int = P
     if course_model is not None:
         return course_model
     raise HTTPException(status_code=404, detail="Course not found")
+
 
 @router.get("/closest_courses/")
 async def get_closest_courses(lat: float = Query(...),

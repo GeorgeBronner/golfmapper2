@@ -1,11 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, Path, Query
 from starlette import status
-from pydantic import BaseModel, Field
 from database import SessionLocal
 from sqlalchemy.orm import Session
 from typing import Annotated
 from models import Courses
-from routers.auth import get_current_user, get_test_user
+from routers.auth import get_test_user
 from sqlalchemy import func
 from geopy.distance import geodesic
 from geopy.geocoders import Nominatim

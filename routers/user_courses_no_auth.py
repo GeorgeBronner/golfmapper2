@@ -1,22 +1,18 @@
-from fastapi import APIRouter, Depends, HTTPException, Path, Query
+from fastapi import APIRouter, Depends, HTTPException, Path
 from starlette import status
 from pydantic import BaseModel, Field, field_validator
 from database import SessionLocal
-from sqlalchemy.orm import Session, joinedload
+from sqlalchemy.orm import Session
 from typing import Annotated
 from models import Courses, UserCourses
-from routers.auth import get_current_user, get_test_user
-from sqlalchemy import func
-from geopy.distance import geodesic
-from geopy.geocoders import Nominatim
+from routers.auth import get_test_user
 import geopy.geocoders
 import certifi
 import ssl
-from typing import Optional
 
 
 ctx = ssl._create_unverified_context(cafile=certifi.where())
-geopy.geocoders.options.default_ssl_context = ctx   #reenable
+geopy.geocoders.options.default_ssl_context = ctx
 
 router = APIRouter(prefix="/user_courses_no_auth", tags=["user_courses_no_auth"])
 

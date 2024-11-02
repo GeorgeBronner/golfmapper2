@@ -12,6 +12,7 @@ passlib
 folium
 sentry-sdk[fastapi]
 python-dotenv
+fastapi_pagination
 #for postgres
 psycopg2-binary
 ###

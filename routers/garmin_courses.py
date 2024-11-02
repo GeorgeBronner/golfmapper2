@@ -41,7 +41,19 @@ async def readall(user: user_dependency, db: db_dependency):
     if user is None:
         raise HTTPException(status_code=401, detail="Unauthorized")
     # return db.query(Courses).all()
-    return db.query(Courses).filter(Courses.g_state == 'Texas').all()
+    return db.query(Courses).filter(Courses.g_state == 'Alabama').all()
+
+
+@router.get("/readall_page_manual", status_code=status.HTTP_200_OK)
+async def readall_page_manual(user: user_dependency, db: db_dependency, page: int = Query(1, ge=1), limit: int = Query(20, ge=1)):
+    if user is None:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+
+    offset = (page - 1) * limit
+
+    courses = db.query(Courses).offset(offset).limit(limit).all()
+
+    return courses
 
 
 @router.get("/course/{course_id}", status_code=status.HTTP_200_OK)
@@ -103,7 +115,7 @@ def courses_from_location(location: geopy.location.Location, db: Session, course
     courses_with_distances = []
     for course in closest_courses:
         distance = geodesic((lat, long), (course.g_latitude, course.g_longitude)).kilometers
-        courses_with_distances.append((course, distance))
+        courses_with_distances.append((course, {'distance': distance}))
     return courses_with_distances
 
 @router.get("/zipcode_coordinates/")

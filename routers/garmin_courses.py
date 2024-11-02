@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Path, Query
 from starlette import status
 from database import SessionLocal
 from sqlalchemy.orm import Session
+from sqlalchemy import select
 from typing import Annotated
 from models import Courses
 from routers.auth import get_current_user
@@ -12,6 +13,8 @@ import geopy.geocoders
 import certifi
 import ssl
 from typing import Optional
+from fastapi_pagination import Page
+from fastapi_pagination.ext.sqlalchemy import paginate
 
 ctx = ssl._create_unverified_context(cafile=certifi.where())
 geopy.geocoders.options.default_ssl_context = ctx
@@ -42,6 +45,37 @@ async def readall(user: user_dependency, db: db_dependency):
         raise HTTPException(status_code=401, detail="Unauthorized")
     # return db.query(Courses).all()
     return db.query(Courses).filter(Courses.g_state == 'Alabama').all()
+
+from pydantic import BaseModel
+
+class CourseBase(BaseModel):
+    # id = Column(Integer, primary_key=True)
+    # g_course = Column(String(250))
+    # g_address = Column(String(250))
+    # g_city = Column(String(100))
+    # g_state = Column(String(40))
+    # g_country = Column(String(40))
+    # g_latitude = Column(Float)
+    # g_longitude = Column(Float)
+
+
+    id: int
+    g_course: str
+    g_address: str
+    g_city: str
+    g_state: str
+    g_country: str
+    g_latitude: float
+    g_longitude: float
+
+    class Config:
+        from_attributes = True
+
+@router.get("/readall_page", status_code=status.HTTP_200_OK, response_model=Page[CourseBase])
+async def readall_page(user: user_dependency, db: db_dependency):
+    if user is None:
+        raise HTTPException(status_code=401, detail="Unauthorized")
+    return paginate(db, select(Courses))
 
 
 @router.get("/readall_page_manual", status_code=status.HTTP_200_OK)

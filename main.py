@@ -3,7 +3,7 @@ import os
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
-
+from fastapi_pagination import add_pagination
 from database import engine
 from routers import garmin_courses, garmin_courses_no_auth, auth, admin, users, user_courses, user_courses_no_auth, map
 from models import Base
@@ -25,6 +25,7 @@ sentry_sdk.init(
 )
 
 app = FastAPI()
+add_pagination(app)
 Base.metadata.create_all(bind=engine)
 
 origins = [

@@ -41,6 +41,12 @@ user_dependency = Annotated[dict, Depends(get_test_user)]
 async def readall(user: user_dependency, db: db_dependency):
     if user is None:
         raise HTTPException(status_code=401, detail="Unauthorized")
+    return db.query(Courses).all()
+
+@router.get("/readall_alabama", status_code=status.HTTP_200_OK)
+async def readall_alabama(user: user_dependency, db: db_dependency):
+    if user is None:
+        raise HTTPException(status_code=401, detail="Unauthorized")
     return db.query(Courses).filter(Courses.g_state == 'Alabama').all()
 
 @router.get("/course/{course_id}", status_code=status.HTTP_200_OK)

@@ -3,6 +3,7 @@ WORKDIR /usr/src/app
 
 COPY . .
 RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install unicorn
 EXPOSE 8000
 ENV MODULE_NAME=main
 ENV VARIABLE_NAME=app

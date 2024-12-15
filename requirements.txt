@@ -16,3 +16,4 @@ fastapi_pagination
 #for postgres
 psycopg2-binary
 ###
+uvicorn

@@ -12,12 +12,14 @@ jobs:
 
       - name: Set timestamp
         id: timestamp
-        run: echo "TIMESTAMP=$(date +%s)" >> $GITHUB_ENV
+        run: echo "timestamp=$(date +%s)" >> $GITHUB_ENV
+        outputs:
+          timestamp: ${{ steps.timestamp.outputs.timestamp }}
 
       - name: Build image
-        run: docker build . --file Dockerfile --tag georgebronner/golfmapper2:${{ env.TIMESTAMP }}
+        run: docker build . --file Dockerfile --tag georgebronner/golfmapper2:${{ steps.timestamp.outputs.timestamp }}
 
       - name: Push image to Docker Hub
         run: |
           echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u georgebronner --password-stdin
-          docker push georgebronner/golfmapper2:${{ env.TIMESTAMP }}
+          docker push georgebronner/golfmapper2:${{ steps.timestamp.outputs.timestamp }}

@@ -15,4 +15,5 @@ jobs:
       - name: push image to dockerhub
         run: |
           echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u georgebronner --password-stdin
-          docker push georgebronner/golfmapper2:latest
+          docker push georgebronner/golfmapper2:$(date +%s)
+          # docker push georgebronner/golfmapper2:$latest

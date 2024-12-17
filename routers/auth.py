@@ -1,3 +1,4 @@
+import os
 from datetime import timedelta, datetime, timezone
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException
@@ -9,11 +10,10 @@ from models import Users
 from database import SessionLocal
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import jwt, JWTError
-from keys import SECRET_KEY_AUTH
 
 router = APIRouter(prefix="/auth", tags=["auth"])
+SECRET_KEY=os.getenv("SECRET_KEY_AUTH", ""),
 
-SECRET_KEY = SECRET_KEY_AUTH
 ALGORITHM = "HS256"
 
 bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")

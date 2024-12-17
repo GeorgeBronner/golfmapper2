@@ -12,14 +12,19 @@ DB_USER = os.getenv('DB_USER', 'default_user')
 DB_PASSWORD = os.getenv('DB_PASSWORD', 'default_password')
 DB_HOST = os.getenv('DB_HOST', 'localhost')
 DB_PORT = os.getenv('DB_PORT', '5432')
-USE_SQLITE_DB = os.getenv('USE_SQLITE_DB', 'false')
+USE_SQLITE_DB = os.getenv('USE_SQLITE_DB', 'true')
+SQLITE_DB_URL = os.getenv('SQLITE_DB_URL', None)
+
 
 # use with mysql
 # SQLALCHEMY_DATABASE_URL = 'mysql+pymysql://root:password@10.9.8.221:3306/garminApplicationDatabase'
 # engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
-if USE_SQLITE_DB == 'true' or USE_SQLITE_DB == 'True':
-    SQLALCHEMY_DATABASE_URL = "sqlite:///./garmin.db"
+if USE_SQLITE_DB.lower() == 'true':
+    if SQLITE_DB_URL:
+        SQLALCHEMY_DATABASE_URL = f'sqlite:///{SQLITE_DB_URL}'
+    else:
+        SQLALCHEMY_DATABASE_URL = "sqlite:///./garmin.db"
     engine = create_engine(SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False})
 else:
     SQLALCHEMY_DATABASE_URL = f'postgresql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/golfmapper2?options=-csearch_path%3Dmain'

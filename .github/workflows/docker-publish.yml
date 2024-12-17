@@ -13,8 +13,6 @@ jobs:
       - name: Set timestamp
         id: timestamp
         run: echo "timestamp=$(date +%s)" >> $GITHUB_ENV
-        outputs:
-          timestamp: ${{ steps.timestamp.outputs.timestamp }}
 
       - name: Build image
         run: docker build . --file Dockerfile --tag georgebronner/golfmapper2:${{ steps.timestamp.outputs.timestamp }}

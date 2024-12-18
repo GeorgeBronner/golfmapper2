@@ -15,9 +15,11 @@ jobs:
         run: echo "TIMESTAMP=$(date +%s)" >> $GITHUB_ENV
 
       - name: Build image
-        run: docker build . --file Dockerfile --tag georgebronner/golfmapper2:${{ env.TIMESTAMP }}
+        run: |
+          docker build . --file Dockerfile --tag georgebronner/golfmapper2:${{ env.TIMESTAMP }} --tag georgebronner/golfmapper2:latest
 
       - name: Push image to Docker Hub
         run: |
           echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u georgebronner --password-stdin
           docker push georgebronner/golfmapper2:${{ env.TIMESTAMP }}
+          docker push georgebronner/golfmapper2:latest

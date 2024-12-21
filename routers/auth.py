@@ -12,7 +12,7 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import jwt, JWTError
 
 router = APIRouter(prefix="/auth", tags=["auth"])
-SECRET_KEY=os.getenv("SECRET_KEY_AUTH", ""),
+SECRET_KEY=os.getenv("SECRET_KEY_AUTH", "")
 
 ALGORITHM = "HS256"
 

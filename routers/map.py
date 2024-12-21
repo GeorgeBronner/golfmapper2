@@ -36,9 +36,9 @@ async def root(user: user_dependency):
     return FileResponse(f"static/user_maps/user_map_{user['username']}_{user['id']}.html")
 
 
-@router.get("/usermap1")
-async def root():
-    return FileResponse("static/user_map_test1.html")
+# @router.get("/usermap1")
+# async def root():
+#     return FileResponse("static/user_map_test1.html")
 
 
 @router.get("/user_map_generate", status_code=status.HTTP_200_OK)
@@ -57,9 +57,6 @@ async def user_map_generate(user: user_dependency, db: db_dependency):
                                 radius=7))
     map.add_child(fg)
 
-    # TODO: Decide on a format for the file name
-    # map.save(f"static/user_maps/user_map_{user['id']}.html")
-    # map.save(f"static/user_maps/user_map_{user['username']}.html")
     map.save(f"static/user_maps/user_map_{user['username']}_{user['id']}.html")
 
     return {"message": "Map generated"}

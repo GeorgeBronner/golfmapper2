@@ -37,13 +37,13 @@ def get_db():
 
 db_dependency = Annotated[Session, Depends(get_db)]
 user_dependency = Annotated[dict, Depends(get_current_user)]
+geolocator = Nominatim(user_agent="golfmapper2")
 
 
 @router.get("/readall", status_code=status.HTTP_200_OK)
 async def readall(user: user_dependency, db: db_dependency):
     if user is None:
         raise HTTPException(status_code=401, detail="Unauthorized")
-    # return db.query(Courses).all()
     return db.query(Courses).all()
 
 @router.get("/readall_alabama", status_code=status.HTTP_200_OK)
@@ -56,16 +56,6 @@ async def readall_alabama(user: user_dependency, db: db_dependency):
 from pydantic import BaseModel
 
 class CourseBase(BaseModel):
-    # id = Column(Integer, primary_key=True)
-    # g_course = Column(String(250))
-    # g_address = Column(String(250))
-    # g_city = Column(String(100))
-    # g_state = Column(String(40))
-    # g_country = Column(String(40))
-    # g_latitude = Column(Float)
-    # g_longitude = Column(Float)
-
-
     id: int
     g_course: str
     g_address: str
@@ -91,7 +81,6 @@ async def readall_page_manual(user: user_dependency, db: db_dependency, page: in
         raise HTTPException(status_code=401, detail="Unauthorized")
 
     offset = (page - 1) * limit
-
     courses = db.query(Courses).offset(offset).limit(limit).all()
 
     return courses
@@ -126,7 +115,6 @@ async def get_closest_courses(lat: float = Query(...),
     return courses_with_distances
 
 
-geolocator = Nominatim(user_agent="golfmapper2")
 
 @router.get("/city_coordinates/")
 async def get_city_coordinates(city: str = Query(...), state: str = None, country: str = None):
@@ -159,6 +147,8 @@ def courses_from_location(location: geopy.location.Location, db: Session, course
         courses_with_distances.append((course, {'distance': distance}))
     return courses_with_distances
 
+
+#fixme: zipcode_coordinates is giving wrong coordinates
 @router.get("/zipcode_coordinates/")
 async def get_zipcode_coordinates(zipcode: str = Query(...)):
     try:
@@ -208,5 +198,3 @@ async def city_closest_courses(
             raise HTTPException(status_code=404, detail="Location not found")
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-

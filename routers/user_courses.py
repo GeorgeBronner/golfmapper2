@@ -10,7 +10,6 @@ from routers.auth import get_current_user
 import geopy.geocoders
 import certifi
 import ssl
-from typing import Optional
 
 
 ctx = ssl._create_unverified_context(cafile=certifi.where())

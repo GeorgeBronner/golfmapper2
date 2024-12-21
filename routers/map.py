@@ -11,6 +11,7 @@ import certifi
 import ssl
 
 from routers.user_courses import readall
+from routers.users import user_info
 
 ctx = ssl._create_unverified_context(cafile=certifi.where())
 geopy.geocoders.options.default_ssl_context = ctx
@@ -48,15 +49,15 @@ async def user_map_generate(user: user_dependency, db: db_dependency):
     user_courses = await readall(user, db)
     if not user_courses:
         raise HTTPException(status_code=404, detail="No courses found")
-    map = folium.Map(location=[40, -90], zoom_start=4, control_scale=True)
+    user_map = folium.Map(location=[40, -90], zoom_start=4, control_scale=True)
     fg = folium.FeatureGroup(name=f"FIX ME - USERNAME")
     for i in user_courses:
         new_description = i.g_course + ' ' + str(i.id)
         fg.add_child(
             folium.CircleMarker(location=[i.g_latitude, i.g_longitude], popup=new_description, color='red', opacity=0.7,
                                 radius=7))
-    map.add_child(fg)
+    user_map.add_child(fg)
 
-    map.save(f"static/user_maps/user_map_{user['username']}_{user['id']}.html")
+    user_map.save(f"static/user_maps/user_map_{user['username']}_{user['id']}.html")
 
     return {"message": "Map generated"}

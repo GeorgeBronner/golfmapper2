@@ -1,13 +1,13 @@
 fastapi
 geopy
 pydantic
-python-jose==3.3.0
+python-jose
 SQLAlchemy
 starlette
 requests
 pytest
 pytest-asyncio
-bcrypt==3.2.2
+bcrypt
 passlib
 folium
 sentry-sdk[fastapi]

@@ -8,7 +8,6 @@ from models import Courses
 from routers.auth import get_current_user
 from sqlalchemy import func
 from geopy.distance import geodesic
-from geopy.geocoders import Nominatim
 import geopy.geocoders
 import certifi
 import ssl
@@ -37,7 +36,7 @@ def get_db():
 
 db_dependency = Annotated[Session, Depends(get_db)]
 user_dependency = Annotated[dict, Depends(get_current_user)]
-geolocator = Nominatim(user_agent="golfmapper2")
+geolocator = geopy.geocoders.Nominatim(user_agent="golfmapper2")
 
 
 @router.get("/readall", status_code=status.HTTP_200_OK)
@@ -148,11 +147,10 @@ def courses_from_location(location: geopy.location.Location, db: Session, course
     return courses_with_distances
 
 
-#fixme: zipcode_coordinates is giving wrong coordinates
 @router.get("/zipcode_coordinates/")
-async def get_zipcode_coordinates(zipcode: str = Query(...)):
+async def get_zipcode_coordinates(zipcode: str = Query(...), country: Optional[str] = "US"):
     try:
-        location = geolocator.geocode(zipcode)
+        location = geolocator.geocode(zipcode, country_codes=country)
         if location:
             return {"latitude": location.latitude, "longitude": location.longitude}
         else:
@@ -164,10 +162,11 @@ async def get_zipcode_coordinates(zipcode: str = Query(...)):
 @router.get("/zipcode_closest_courses/")
 async def zipcode_closest_courses(
         zipcode: str = Query(...),
+        country: Optional[str] = "US",
         courses_returned: Optional[int] = 5,
         db: Session = Depends(get_db)):
     try:
-        location = geolocator.geocode(zipcode)
+        location = geolocator.geocode(zipcode, country_codes=country)
         if location:
             return courses_from_location(location, db, courses_returned)
         else:
